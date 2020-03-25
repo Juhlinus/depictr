@@ -1,0 +1,33 @@
+{
+    "name": "juhlinus/depictr",
+    "type": "library",
+    "autoload": {
+        "psr-4": {
+            "Depictr\\": "src"
+        }
+    },
+    "autoload-dev": {
+        "psr-4": {
+            "Depictr\\Tests\\": "tests/"
+        }
+    },
+    "require-dev": {
+        "orchestra/testbench": "^5.1"
+    },
+    "authors": [
+        {
+            "name": "Linus Juhlin",
+            "email": "linus.juhlin@protonmail.com"
+        }
+    ],
+    "require": {
+        "symfony/panther": "^1.0@dev"
+    },
+    "extra": {
+        "laravel": {
+            "providers": [
+                "Depictr\\ServiceProvider"
+            ]
+        }
+    }
+}
