@@ -3,7 +3,9 @@
 **Consider [sponsoring me on github](https://github.com/sponsors/juhlinus)!**
 
 ## Installation
-`composer require juhlinus/depictr`
+```
+composer require juhlinus/depictr
+```
 
 ## Usage
 Require the package from packagist, and define the middleware like so:
