@@ -1,6 +1,7 @@
 {
     "name": "juhlinus/depictr",
     "type": "library",
+    "license": "MIT",
     "autoload": {
         "psr-4": {
             "Depictr\\": "src"
