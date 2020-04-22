@@ -6,7 +6,7 @@ use Closure;
 use RuntimeException;
 use Illuminate\Support\Str;
 use Illuminate\Http\Request;
-use Illuminate\Http\Response;
+use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Panther\Client as PantherClient;
 
 class Middleware
