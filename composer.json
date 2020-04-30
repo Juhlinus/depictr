@@ -22,6 +22,7 @@
         }
     ],
     "require": {
+        "php": "^7.4",
         "symfony/panther": "^1.0@dev"
     },
     "extra": {
