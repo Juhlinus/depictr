@@ -11,6 +11,14 @@ use Symfony\Component\Panther\Client as PantherClient;
 
 class Middleware
 {
+    /**
+     * Handle an incoming request.
+     *
+     * @param \Illuminate\Http\Request $request
+     * @param \Closure                 $next
+     *
+     * @return \Symfony\Component\HttpFoundation\Response
+     */
     public function handle($request, Closure $next): Response
     {
         if ($this->shouldDepict($request)) {
@@ -29,6 +37,14 @@ class Middleware
         return $next($request);
     }
 
+    /**
+     * Returns whether or not the request is made by a search
+     * engine crawler.
+     *
+     * @param      \Illuminate\Http\Request  $request  The request
+     *
+     * @return     boolean
+     */
     private function shouldDepict(Request $request): bool
     {
         return (app()->environment('production')
@@ -38,6 +54,13 @@ class Middleware
             && ! $request->header('X-Inertia');
     }
 
+    /**
+     * Returns whether not the request is made by a valid crawler.
+     *
+     * @param      \Illuminate\Http\Request  $request  The request
+     *
+     * @return     boolean
+     */
     private function comesFromCrawler(Request $request): bool
     {
         return ! empty($request->userAgent())
@@ -47,6 +70,13 @@ class Middleware
             );
     }
 
+    /**
+     * Renders a HTML page for the search enginie crawler.
+     *
+     * @param      string  $url    The url
+     *
+     * @return     array   Status code and raw HTML.
+     */
     private function requestRenderedPage(string $url): array
     {
         $client = PantherClient::createChromeClient();
