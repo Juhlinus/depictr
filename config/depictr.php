@@ -56,4 +56,16 @@ return [
         */
         'ia_archiver',          // Alexa
     ],
+
+    /*
+    |--------------------------------------------------------------------------
+    | White List
+    |--------------------------------------------------------------------------
+    |
+    | URLs that should NOT be processed by depictr. Useful for plain text files
+    | like sitemap.txt where Panther will wrap it in a stripped down HTML file.
+    | Uses $request->is() so using `*` for wildcard is permitted.
+    |
+    */
+    'whitelist' => [],
 ];

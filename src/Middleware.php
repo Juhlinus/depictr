@@ -51,7 +51,8 @@ class Middleware
             || app()->environment('testing'))
             && $this->comesFromCrawler($request)
             && $request->isMethod('GET')
-            && ! $request->header('X-Inertia');
+            && ! $request->header('X-Inertia')
+            && ! $this->whiteListed($request);
     }
 
     /**
@@ -90,5 +91,18 @@ class Middleware
             'content' => $pageSource,
             'code' => 200,
         ];
+    }
+
+    /**
+     * Returns whether not the request is a whitelisted URL. Uses
+     * $request->is() so `*` as wildcard is permitted.
+     *
+     * @param      \Illuminate\Http\Request  $request  The request
+     *
+     * @return     boolean
+     */
+    private function whiteListed(Request $request): bool
+    {
+        return $request->is(config('depictr.whitelist', []));
     }
 }
