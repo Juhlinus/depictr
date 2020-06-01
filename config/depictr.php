@@ -68,4 +68,17 @@ return [
     |
     */
     'whitelist' => [],
+
+    /*
+    |--------------------------------------------------------------------------
+    | Environments
+    |--------------------------------------------------------------------------
+    |
+    | Which Laravel environments should depictr be active for.
+    |
+    */
+    'environments' => [
+        'production',
+        'testing',
+    ],
 ];
