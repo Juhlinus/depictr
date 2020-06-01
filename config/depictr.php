@@ -56,4 +56,17 @@ return [
         */
         'ia_archiver',          // Alexa
     ],
+
+    /*
+    |--------------------------------------------------------------------------
+    | Environments
+    |--------------------------------------------------------------------------
+    |
+    | Which Laravel environments should depictr be active for.
+    |
+    */
+    'environments' => [
+        'production',
+        'testing',
+    ],
 ];

@@ -47,8 +47,7 @@ class Middleware
      */
     private function shouldDepict(Request $request): bool
     {
-        return (app()->environment('production')
-            || app()->environment('testing'))
+        return app()->environment(config('depictr.environments', []))
             && $this->comesFromCrawler($request)
             && $request->isMethod('GET')
             && ! $request->header('X-Inertia');
