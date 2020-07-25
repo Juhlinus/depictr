@@ -69,7 +69,7 @@ return [
 ]        
 ```
 
-### ◻️ Whitelisting
+### ✍️ Whitelisting
 
 Depictr comes with the option of excluding an array of urls that shouldn't be processed.
 
