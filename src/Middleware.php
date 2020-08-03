@@ -51,7 +51,7 @@ class Middleware
             && $this->comesFromCrawler($request)
             && $request->isMethod('GET')
             && ! $request->header('X-Inertia')
-            && ! $this->whiteListed($request);
+            && $this->UrlIsNotExcluded($request);
     }
 
     /**
@@ -100,7 +100,7 @@ class Middleware
      *
      * @return     boolean
      */
-    private function whiteListed(Request $request): bool
+    private function UrlIsNotExcluded(Request $request): bool
     {
         return $request->is(config('depictr.whitelist', []));
     }
