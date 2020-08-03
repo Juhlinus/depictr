@@ -23,7 +23,7 @@
     ],
     "require": {
         "php": "^7.4",
-        "symfony/panther": "^1.0@dev"
+        "symfony/panther": "^0.7"
     },
     "extra": {
         "laravel": {
