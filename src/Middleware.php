@@ -94,7 +94,9 @@ class Middleware
 
     /**
      * Returns whether the request is an excluded URL or not. 
-     * Uses $request->is(), which permits wildcards(*).
+     * \Illuminate\Http\Request::is(...$patterns) is 
+     * used, which allows you to match routes
+     * using wildcards.
      *
      * @param      \Illuminate\Http\Request  $request  The request
      *
