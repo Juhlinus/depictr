@@ -51,7 +51,7 @@ class Middleware
             && $this->comesFromCrawler($request)
             && $request->isMethod('GET')
             && ! $request->header('X-Inertia')
-            && ! $this->whiteListed($request);
+            && $this->UrlIsNotExcluded($request);
     }
 
     /**
@@ -93,14 +93,16 @@ class Middleware
     }
 
     /**
-     * Returns whether not the request is a whitelisted URL. Uses
-     * $request->is() so `*` as wildcard is permitted.
+     * The method returns whether the request is an excluded URL
+     * or not. \Illuminate\Http\Request::is(...$patterns)
+     * is used, which allows you to match routes
+     * using wildcards.
      *
      * @param      \Illuminate\Http\Request  $request  The request
      *
      * @return     boolean
      */
-    private function whiteListed(Request $request): bool
+    private function UrlIsNotExcluded(Request $request): bool
     {
         return $request->is(config('depictr.whitelist', []));
     }
