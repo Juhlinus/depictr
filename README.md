@@ -1,4 +1,4 @@
-# Depictr
+# 📽 Depictr
 ## 💰 Is this useful to you?
 **Consider [sponsoring me on github](https://github.com/sponsors/juhlinus)! 🙏**
 
@@ -69,11 +69,13 @@ return [
 ]        
 ```
 
-### ✍️ Whitelisting
+### ⛔ Exclusion
 
 Depictr comes with the option of excluding an array of urls that shouldn't be processed.
 
-This is useful for plain text files like `sitemap.txt` where Panther will wrap it in a stripped down HTML file. Use of wildcard is permitted.
+This is useful for plain text files like `sitemap.txt`, where Panther will wrap it in a stripped down HTML file. Use of wildcard is permitted.
+
+Per default the `admin` route and its sub-routes are excluded in the config file.
 
 ### 🏞 Environments
 
