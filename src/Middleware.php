@@ -93,8 +93,8 @@ class Middleware
     }
 
     /**
-     * Returns whether not the request is a whitelisted URL. Uses
-     * $request->is() so `*` as wildcard is permitted.
+     * Returns whether not the request is an excluded URL. Uses
+     * $request->is(), so `*` as wildcard is permitted.
      *
      * @param      \Illuminate\Http\Request  $request  The request
      *
