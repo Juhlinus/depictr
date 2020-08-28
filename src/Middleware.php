@@ -3,14 +3,23 @@
 namespace Depictr;
 
 use Closure;
+use Depictr\Contracts\Browser;
 use Illuminate\Http\Request;
-use Illuminate\Support\Str;
-use RuntimeException;
 use Symfony\Component\HttpFoundation\Response;
-use Symfony\Component\Panther\Client as PantherClient;
+use Throwable;
 
 class Middleware
 {
+    /**
+     * @var Browser
+     */
+    protected $browser;
+
+    public function __construct(Browser $browser)
+    {
+        $this->browser = $browser;
+    }
+
     /**
      * Handle an incoming request.
      *
@@ -23,14 +32,15 @@ class Middleware
     {
         if ($this->shouldDepict($request)) {
             try {
-                $response = $this->requestRenderedPage($request->fullUrl());
-            } catch (RuntimeException $exception) {
+                $response = $this->browser->render($request->fullUrl());
+            } catch (Throwable $exception) {
                 return $next($request);
             }
 
             return response(
-                $response['content'],
-                $response['code']
+                $response,
+                200,
+                ['X-Depicted' => now()->toString()]
             );
         }
 
@@ -47,11 +57,19 @@ class Middleware
      */
     private function shouldDepict(Request $request): bool
     {
+        if (! $request->isMethod('GET')
+            || $request->header('X-Inertia')
+            || $this->isExcluded($request)
+        ) {
+            return false;
+        }
+
+        if (config('depictr.debug')) {
+            return true;
+        }
+
         return app()->environment(config('depictr.environments', []))
-            && $this->comesFromCrawler($request)
-            && $request->isMethod('GET')
-            && ! $request->header('X-Inertia')
-            && $this->UrlIsNotExcluded($request);
+            && $this->comesFromCrawler($request);
     }
 
     /**
@@ -63,33 +81,15 @@ class Middleware
      */
     private function comesFromCrawler(Request $request): bool
     {
-        return ! empty($request->userAgent())
-            && Str::contains(
-                strtolower($request->userAgent()),
-                config('depictr.crawlers')
-            );
-    }
+        if (empty($userAgent = $request->userAgent())) {
+            return false;
+        }
 
-    /**
-     * Renders a HTML page for the search engine crawler.
-     *
-     * @param string  $url
-     *
-     * @return array
-     */
-    private function requestRenderedPage(string $url): array
-    {
-        $client = PantherClient::createChromeClient();
-        $client->request('GET', $url);
-
-        $pageSource = $client->getPageSource();
-
-        $client->close();
-
-        return [
-            'content' => $pageSource,
-            'code' => 200,
-        ];
+        return collect(config('depictr.crawlers'))
+            ->map(function ($crawler) {
+                return strtolower($crawler);
+            })
+            ->contains(strtolower($userAgent));
     }
 
     /**
@@ -102,10 +102,10 @@ class Middleware
      *
      * @return bool
      */
-    private function UrlIsNotExcluded(Request $request): bool
+    private function isExcluded(Request $request): bool
     {
         return $request->is(
-            config('depictr.whitelist', [])
+            ...config('depictr.excluded', [])
         );
     }
 }

@@ -1,6 +1,20 @@
 <?php
 
 return [
+
+    /*
+    |--------------------------------------------------------------------------
+    | Depictr Debug Mode
+    |--------------------------------------------------------------------------
+    |
+    | When Depictr is in debug mode, all included endpoints are rendered
+    | as-if the request is coming from a crawler. When disabled, this
+    | only happens for the crawlers you've defined.
+    |
+    */
+
+    'debug' => env('DEPICTR_DEBUG', false),
+
     /*
     |--------------------------------------------------------------------------
     | Crawlers

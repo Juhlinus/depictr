@@ -2,6 +2,8 @@
 
 namespace Depictr;
 
+use Depictr\Browsers\ChromeBrowser;
+use Depictr\Contracts\Browser;
 use Illuminate\Contracts\Http\Kernel;
 use Illuminate\Support\ServiceProvider as BaseServiceProvider;
 
@@ -16,6 +18,16 @@ class ServiceProvider extends BaseServiceProvider
     {
         $this->registerMiddleware();
         $this->publishConfig();
+    }
+
+    /**
+     * Register any application services.
+     *
+     * @return void
+     */
+    public function register()
+    {
+        $this->app->bind(Browser::class, ChromeBrowser::class);
     }
 
     /**
