@@ -3,8 +3,8 @@
 namespace Depictr\Tests\__fixtures;
 
 use Depictr\Contracts\Browser;
-use Exception;
 use Illuminate\Support\Str;
+use RuntimeException;
 use Throwable;
 
 class FakeBrowser implements Browser
@@ -19,7 +19,7 @@ class FakeBrowser implements Browser
     public function render(string $url): string
     {
         if (Str::endsWith($url, '/fail')) {
-            throw new Exception('Something went wrong');
+            throw new RuntimeException('Something went wrong');
         }
 
         return '<html><head></head><body>Fake Depictr Response</body></html>';

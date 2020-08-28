@@ -5,7 +5,7 @@ namespace Depictr;
 use Closure;
 use Depictr\Contracts\Browser;
 use Illuminate\Http\Request;
-use Symfony\Component\HttpFoundation\Response;
+use Illuminate\Http\Response;
 use Throwable;
 
 class Middleware
@@ -30,21 +30,21 @@ class Middleware
      */
     public function handle($request, Closure $next): Response
     {
-        if ($this->shouldDepict($request)) {
-            try {
-                $response = $this->browser->render($request->fullUrl());
-            } catch (Throwable $exception) {
-                return $next($request);
-            }
-
-            return response(
-                $response,
-                200,
-                ['X-Depicted' => now()->toString()]
-            );
+        if (! $this->shouldDepict($request)) {
+            return $next($request);
         }
 
-        return $next($request);
+        try {
+            $contents = $this->browser->render($request->fullUrl());
+        } catch (Throwable $exception) {
+            return $next($request);
+        }
+
+        return new Response(
+            $contents,
+            200,
+            ['X-Depicted' => now()->toString()]
+        );
     }
 
     /**
@@ -55,7 +55,7 @@ class Middleware
      *
      * @return bool
      */
-    private function shouldDepict(Request $request): bool
+    protected function shouldDepict(Request $request): bool
     {
         if (! $request->isMethod('GET')
             || $request->header('X-Inertia')
@@ -68,18 +68,18 @@ class Middleware
             return true;
         }
 
-        return app()->environment(config('depictr.environments', []))
-            && $this->comesFromCrawler($request);
+        return $this->environmentEnabled()
+            && $this->isFromCrawler($request);
     }
 
     /**
-     * Returns whether not the request is made by a valid crawler.
+     * Determine whether not the request is made by a valid crawler.
      *
      * @param Request  $request
      *
      * @return bool
      */
-    private function comesFromCrawler(Request $request): bool
+    protected function isFromCrawler(Request $request): bool
     {
         if (empty($userAgent = $request->userAgent())) {
             return false;
@@ -93,10 +93,7 @@ class Middleware
     }
 
     /**
-     * The method returns whether the request is an excluded URL
-     * or not. \Illuminate\Http\Request::is(...$patterns)
-     * is used, which allows you to match routes
-     * using wildcards.
+     * Determine whether the Request is for an excluded page.
      *
      * @param Request  $request
      *
@@ -106,6 +103,19 @@ class Middleware
     {
         return $request->is(
             ...config('depictr.excluded', [])
+        );
+    }
+
+    /**
+     * Determine whether Depictr is enabled
+     * for this environment.
+     *
+     * @return bool
+     */
+    protected function environmentEnabled(): bool
+    {
+        return app()->environment(
+            config('depictr.environments', [])
         );
     }
 }
