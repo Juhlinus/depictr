@@ -5,6 +5,7 @@ namespace Depictr;
 use Closure;
 use Depictr\Contracts\Browser;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Log;
 use Symfony\Component\HttpFoundation\Response;
 use Throwable;
 
@@ -37,6 +38,7 @@ class Middleware
         try {
             $contents = $this->browser->render($request->fullUrl());
         } catch (Throwable $exception) {
+            Log::error($exception);
             return $next($request);
         }
 
