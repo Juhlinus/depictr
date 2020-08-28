@@ -9,7 +9,7 @@ class ServiceProvider extends BaseServiceProvider
 {
     /**
      * Boot the service provider.
-     * 
+     *
      * @return void
      */
     public function boot()
@@ -20,7 +20,7 @@ class ServiceProvider extends BaseServiceProvider
 
     /**
      * Register the Depictr middleware.
-     * 
+     *
      * @return void
      */
     protected function registerMiddleware()
@@ -30,7 +30,7 @@ class ServiceProvider extends BaseServiceProvider
 
     /**
      * Publishes the Depictr config.
-     * 
+     *
      * @return void
      */
     protected function publishConfig()

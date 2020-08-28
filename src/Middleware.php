@@ -3,9 +3,9 @@
 namespace Depictr;
 
 use Closure;
-use RuntimeException;
-use Illuminate\Support\Str;
 use Illuminate\Http\Request;
+use Illuminate\Support\Str;
+use RuntimeException;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Panther\Client as PantherClient;
 
@@ -14,10 +14,10 @@ class Middleware
     /**
      * Handle an incoming request.
      *
-     * @param \Illuminate\Http\Request $request
-     * @param \Closure                 $next
+     * @param Request  $request
+     * @param Closure  $next
      *
-     * @return \Symfony\Component\HttpFoundation\Response
+     * @return Response
      */
     public function handle($request, Closure $next): Response
     {
@@ -30,7 +30,7 @@ class Middleware
 
             return response(
                 $response['content'],
-                $response['code'],
+                $response['code']
             );
         }
 
@@ -41,9 +41,9 @@ class Middleware
      * Returns whether or not the request is made by a search
      * engine crawler.
      *
-     * @param      \Illuminate\Http\Request  $request  The request
+     * @param Request  $request
      *
-     * @return     boolean
+     * @return bool
      */
     private function shouldDepict(Request $request): bool
     {
@@ -57,9 +57,9 @@ class Middleware
     /**
      * Returns whether not the request is made by a valid crawler.
      *
-     * @param      \Illuminate\Http\Request  $request  The request
+     * @param Request  $request
      *
-     * @return     boolean
+     * @return bool
      */
     private function comesFromCrawler(Request $request): bool
     {
@@ -71,11 +71,11 @@ class Middleware
     }
 
     /**
-     * Renders a HTML page for the search enginie crawler.
+     * Renders a HTML page for the search engine crawler.
      *
-     * @param      string  $url    The url
+     * @param string  $url
      *
-     * @return     array   Status code and raw HTML.
+     * @return array
      */
     private function requestRenderedPage(string $url): array
     {
@@ -98,12 +98,14 @@ class Middleware
      * is used, which allows you to match routes
      * using wildcards.
      *
-     * @param      \Illuminate\Http\Request  $request  The request
+     * @param Request  $request
      *
-     * @return     boolean
+     * @return bool
      */
     private function UrlIsNotExcluded(Request $request): bool
     {
-        return $request->is(config('depictr.whitelist', []));
+        return $request->is(
+            config('depictr.whitelist', [])
+        );
     }
 }
