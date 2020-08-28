@@ -80,3 +80,41 @@ Per default the `admin` route and its sub-routes are excluded in the config file
 ### 🏞 Environments
 
 You can specify which environments Depictr should run on. Default is `testing` and `production`.
+
+## Installation Chrome
+
+If already have Chrome installed, can skip this step.
+
+Installation attention, the major version of Chromium (Chrome) browser must be the same as the Chrome driver.
+
+### Ubuntu
+
+```
+sudo apt-get update
+sudo apt-get upgrade
+sudo apt-get install chromium-browser
+chromium-browser -version
+```
+
+Install the old version for ChromeDriver, the same major version as Chromium (https://chromedriver.storage.googleapis.com/index.html):
+
+```
+curl -O https://chromedriver.storage.googleapis.com/84.0.4147.30/chromedriver_linux64.zip
+unzip chromedriver_linux64.zip
+```
+
+Finlly, add ChromeDriver path to `.env`:
+
+```
+PANTHER_CHROME_DRIVER_BINARY=/path/to/chromedriver
+```
+
+### Heroku
+
+Add Buildpacks (MUST follow this order):
+
+1. https://github.com/heroku/heroku-buildpack-chromedriver
+2. https://github.com/heroku/heroku-buildpack-google-chrome
+3. heroku/php
+
+Finlly, add key `PANTHER_CHROME_DRIVER_BINARY` and value `/app/.chromedriver/bin/chromedriver` pair to Config Vars.
