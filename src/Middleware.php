@@ -5,7 +5,7 @@ namespace Depictr;
 use Closure;
 use Depictr\Contracts\Browser;
 use Illuminate\Http\Request;
-use Illuminate\Http\Response;
+use \Symfony\Component\HttpFoundation\Response;
 use Throwable;
 
 class Middleware
