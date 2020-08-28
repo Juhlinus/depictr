@@ -30,6 +30,9 @@ class ServiceProviderTest extends TestCase
         $this->app['config']['depictr.crawlers'] = [
             'symfony'
         ];
+        $this->app['config']['depictr.environments'] = [
+            'testing'
+        ];
 
         $request = Request::create('/', 'GET');
         $middleware = new \Depictr\Middleware();
