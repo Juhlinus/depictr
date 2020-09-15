@@ -1,7 +1,21 @@
 {
     "name": "juhlinus/depictr",
+    "description": "A middleware for rendering static pages when crawled by search engines.",
     "type": "library",
     "license": "MIT",
+    "authors": [
+        {
+            "name": "Linus Juhlin",
+            "email": "linus.juhlin@protonmail.com"
+        }
+    ],
+    "require": {
+        "php": "^7.4",
+        "php-webdriver/webdriver": "^1.8"
+    },
+    "require-dev": {
+        "orchestra/testbench": "^5.1"
+    },
     "autoload": {
         "psr-4": {
             "Depictr\\": "src"
@@ -11,19 +25,6 @@
         "psr-4": {
             "Depictr\\Tests\\": "tests/"
         }
-    },
-    "require-dev": {
-        "orchestra/testbench": "^5.1"
-    },
-    "authors": [
-        {
-            "name": "Linus Juhlin",
-            "email": "linus.juhlin@protonmail.com"
-        }
-    ],
-    "require": {
-        "php": "^7.4",
-        "symfony/panther": "^1.0@dev"
     },
     "extra": {
         "laravel": {

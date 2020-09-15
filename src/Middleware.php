@@ -3,107 +3,121 @@
 namespace Depictr;
 
 use Closure;
-use RuntimeException;
-use Illuminate\Support\Str;
+use Depictr\Contracts\Browser;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Log;
 use Symfony\Component\HttpFoundation\Response;
-use Symfony\Component\Panther\Client as PantherClient;
+use Throwable;
 
 class Middleware
 {
     /**
+     * @var Browser
+     */
+    protected $browser;
+
+    public function __construct(Browser $browser)
+    {
+        $this->browser = $browser;
+    }
+
+    /**
      * Handle an incoming request.
      *
-     * @param \Illuminate\Http\Request $request
-     * @param \Closure                 $next
+     * @param Request  $request
+     * @param Closure  $next
      *
-     * @return \Symfony\Component\HttpFoundation\Response
+     * @return Response
      */
     public function handle($request, Closure $next): Response
     {
-        if ($this->shouldDepict($request)) {
-            try {
-                $response = $this->requestRenderedPage($request->fullUrl());
-            } catch (RuntimeException $exception) {
-                return $next($request);
-            }
+//        if (! $this->shouldDepict($request)) {
+//            return $next($request);
+//        }
 
-            return response(
-                $response['content'],
-                $response['code'],
-            );
-        }
+//        try {
+            $contents = $this->browser->render($request->fullUrl());
+//        } catch (Throwable $exception) {
+//            Log::error($exception);
+//            return $next($request);
+//        }
 
-        return $next($request);
+        return new Response(
+            $contents,
+            200,
+            ['X-Depicted' => now()->toString()]
+        );
     }
 
     /**
      * Returns whether or not the request is made by a search
      * engine crawler.
      *
-     * @param      \Illuminate\Http\Request  $request  The request
+     * @param Request  $request
      *
-     * @return     boolean
+     * @return bool
      */
-    private function shouldDepict(Request $request): bool
+    protected function shouldDepict(Request $request): bool
     {
-        return app()->environment(config('depictr.environments', []))
-            && $this->comesFromCrawler($request)
-            && $request->isMethod('GET')
-            && ! $request->header('X-Inertia')
-            && ! $this->urlIsExcluded($request);
+        if (! $request->isMethod('GET')
+            || $request->header('X-Inertia')
+            || $this->isExcluded($request)
+        ) {
+            return false;
+        }
+
+        if (config('depictr.debug')) {
+            return true;
+        }
+
+        return $this->environmentEnabled()
+            && $this->isFromCrawler($request);
     }
 
     /**
-     * Returns whether not the request is made by a valid crawler.
+     * Determine whether not the request is made by a valid crawler.
      *
-     * @param      \Illuminate\Http\Request  $request  The request
+     * @param Request  $request
      *
-     * @return     boolean
+     * @return bool
      */
-    private function comesFromCrawler(Request $request): bool
+    protected function isFromCrawler(Request $request): bool
     {
-        return ! empty($request->userAgent())
-            && Str::contains(
-                strtolower($request->userAgent()),
-                config('depictr.crawlers')
-            );
+        if (empty($userAgent = $request->userAgent())) {
+            return false;
+        }
+
+        return collect(config('depictr.crawlers'))
+            ->map(function ($crawler) {
+                return strtolower($crawler);
+            })
+            ->contains(strtolower($userAgent));
     }
 
     /**
-     * Renders a HTML page for the search enginie crawler.
+     * Determine whether the Request is for an excluded page.
      *
-     * @param      string  $url    The url
+     * @param Request  $request
      *
-     * @return     array   Status code and raw HTML.
+     * @return bool
      */
-    private function requestRenderedPage(string $url): array
+    private function isExcluded(Request $request): bool
     {
-        $client = PantherClient::createChromeClient();
-        $client->request('GET', $url);
-
-        $pageSource = $client->getPageSource();
-
-        $client->close();
-
-        return [
-            'content' => $pageSource,
-            'code' => 200,
-        ];
+        return $request->is(
+            ...config('depictr.excluded', [])
+        );
     }
 
     /**
-     * The method returns whether the request is an excluded URL
-     * or not. \Illuminate\Http\Request::is(...$patterns)
-     * is used, which allows you to match routes
-     * using wildcards.
+     * Determine whether Depictr is enabled
+     * for this environment.
      *
-     * @param      \Illuminate\Http\Request  $request  The request
-     *
-     * @return     boolean
+     * @return bool
      */
-    private function urlIsExcluded(Request $request): bool
+    protected function environmentEnabled(): bool
     {
-        return $request->is(config('depictr.excluded', []));
+        return app()->environment(
+            config('depictr.environments', [])
+        );
     }
 }

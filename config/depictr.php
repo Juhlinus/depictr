@@ -1,6 +1,20 @@
 <?php
 
 return [
+
+    /*
+    |--------------------------------------------------------------------------
+    | Depictr Debug Mode
+    |--------------------------------------------------------------------------
+    |
+    | When Depictr is in debug mode, all included endpoints are rendered
+    | as-if the request is coming from a crawler. When disabled, this
+    | only happens for the crawlers you've defined.
+    |
+    */
+
+    'debug' => env('DEPICTR_DEBUG', false),
+
     /*
     |--------------------------------------------------------------------------
     | Crawlers
@@ -11,7 +25,9 @@ return [
     | should be returned as static html or not.
     |
     */
+
     'crawlers' => [
+
         /*
         |--------------------------------------------------------------------------
         | Search engines
@@ -22,6 +38,7 @@ return [
         | SEO.
         |
         */
+
         'googlebot',            // Google
         'duckduckbot',          // DuckDuckGo
         'bingbot',              // Bing
@@ -38,6 +55,7 @@ return [
         | they link to your website on the social network websites.
         |
         */
+
         'facebookexternalhit',  // Facebook
         'twitterbot',           // Twitter
         'whatsapp',             // WhatsApp
@@ -54,7 +72,9 @@ return [
         | generations may gaze upon your craftsmanship.
         |
         */
+
         'ia_archiver',          // Alexa
+
     ],
 
     /*
@@ -62,15 +82,16 @@ return [
     | Excluded
     |--------------------------------------------------------------------------
     |
-    | URLs that should NOT be processed by Depictr. This is useful for plain 
-    | text files like sitemap.txt where Panther will wrap it in a stripped 
+    | URLs that should NOT be processed by Depictr. This is useful for plain
+    | text files like sitemap.txt where Panther will wrap it in a stripped
     | down HTML file. Uses $request->is(), so using `*` for wildcard
     | is permitted. The admin route and its sub-routes have
     | been added to showacase the functionality.
     |
     */
+
     'excluded' => [
-        'admin/*'
+        'admin/*',
     ],
 
     /*
@@ -81,8 +102,10 @@ return [
     | Which Laravel environments should depictr be active for.
     |
     */
+
     'environments' => [
         'production',
         'testing',
     ],
+
 ];
